@@ -1,11 +1,98 @@
 import Web3 from 'web3';
 import Swal from 'sweetalert2'
-import { deposit_mint_abi, mint_abi, open_abi, frob_abi, gemExit_abi, cdpManager_abi, unwrap_abi,move_abi,XsdExit_abi } from './abi/abis';
+import { deposit_mint_abi, mint_abi, open_abi, frob_abi, gemExit_abi, cdpManager_abi, unwrap_abi,move_abi,XsdExit_abi, XsdJoin_abi, cdpAllow_abi, hope_abi, approve_abi } from './abi/abis';
 import {Address} from "../ContractsAddress"
 import { sendTrax} from "./common/trxHelper"
 import {ethers, JsonRpcProvider} from "ethers";
 
 export async function mintEsdTx(){
+
+}
+
+export async function approveXsd(accountAddress, wad) {
+    
+  const web3 = new Web3(window.ethereum);
+  const addr = accountAddress
+  const xsdAddress = Address.XSDContractAddress;
+  const wadWei = ethers.parseUnits(wad.toString(), 18);
+
+  const data = web3.eth.abi.encodeFunctionCall(approve_abi, [Address.XsdJoinContractAddress, wadWei]); // 함수 ABI와 빈 배열(입력값이 없으므로)
+
+  let transactionInfo = {
+    from: addr,
+    to: xsdAddress,
+    data
+  };
+
+  const web3Return = await sendTrax(transactionInfo)
+
+  return web3Return
+
+}
+
+
+
+export async function joinXsd(accountAddress, urnAddress, wad) {
+    
+  const web3 = new Web3(window.ethereum);
+  const addr = accountAddress
+  const xsdjoinAddress = Address.XsdJoinContractAddress;
+  console.log("xsdJoin", xsdjoinAddress)
+  const wadWei = ethers.parseUnits(wad.toString(), 18);
+
+  const data = web3.eth.abi.encodeFunctionCall(XsdJoin_abi, [urnAddress, wadWei]); // 함수 ABI와 빈 배열(입력값이 없으므로)
+
+  let transactionInfo = {
+    from: addr,
+    to: xsdjoinAddress,
+    data
+  };
+
+  const web3Return = await sendTrax(transactionInfo)
+
+  return web3Return
+
+}
+
+export async function hopeVat(accountAddress){
+
+  const web3 = new Web3(window.ethereum);
+  const addr = accountAddress
+  const vatManagerAddress = Address.VatContractAddress;
+  const xsdJoinAddress = Address.XsdJoinContractAddress
+
+  const data = web3.eth.abi.encodeFunctionCall(hope_abi, [xsdJoinAddress]); // 함수 ABI와 빈 배열(입력값이 없으므로)
+
+  let transactionInfo = {
+    from: addr,
+    to: vatManagerAddress,
+    data
+  };
+
+  const web3Return = await sendTrax(transactionInfo)
+
+  return web3Return
+
+}
+
+export async function allowCdp(cdpId, grantsAccount, grants, accountAddress){
+
+  const web3 = new Web3(window.ethereum);
+  const addr = accountAddress
+  const cdpIdInt = Number(cdpId)
+  const cdpManagerAddress = Address.CDPManagerContractAddress;
+
+  const data = web3.eth.abi.encodeFunctionCall(cdpAllow_abi, [cdpIdInt, grantsAccount, grants]); // 함수 ABI와 빈 배열(입력값이 없으므로)
+
+  let transactionInfo = {
+    from: addr,
+    to: cdpManagerAddress,
+    data
+  };
+
+  const web3Return = await sendTrax(transactionInfo)
+
+  return web3Return
 
 }
 

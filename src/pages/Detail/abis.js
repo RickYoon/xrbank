@@ -21,6 +21,8 @@ export const vatAbi = [
 export const cdpManagerAbi = [
         "function first(address) view returns (uint256)",
         "function ilks(uint256) view returns (bytes32)",
-        "function urns(uint256) view returns (address)"
+        "function urns(uint256) view returns (address)",
+        "function cdpCan(address, uint256, address) view returns (uint256)",
+        "function can(address, address) view returns (uint256)"
     ];
   

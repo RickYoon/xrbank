@@ -3,8 +3,18 @@ import React, { useEffect } from "react";
 import { FaDiscord, FaXTwitter } from 'react-icons/fa6';
 import { HiDocumentText } from 'react-icons/hi';
 import {BiSupport} from 'react-icons/bi'
-
+import { useDispatch , useSelector } from 'react-redux';
+import { 
+  metamaskConnect
+  } from 'redux/reducers/WalletActions'
 function Landing() {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const savedAccount = localStorage.getItem('address');
+    dispatch(metamaskConnect({ account: savedAccount }));
+  }, []);
 
   return (
     <>
@@ -55,7 +65,7 @@ function Landing() {
           <a href="https://xrbankdao.gitbook.io/xrbankdao" target="_blank" rel="noreferrer" title="Read Documentation">
             <HiDocumentText size={40} color="white" />
           </a>
-          <a href="mailto:xrbankDao@gmail.com" title="Send Email">
+          <a href="https://tally.so/r/m6vQLO" target="_blank" rel="noreferrer" title="Read Documentation">
             <BiSupport size={40} color="white" />
           </a>
         </SocialIcons>

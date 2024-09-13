@@ -89,7 +89,7 @@ function Earn() {
                       </div>
                       <div className="grid grid-cols-[1fr_1fr] gap-3">
                         <p className="font-semibold text-left">TVL</p>
-                        <p className="text-neutral-600 text-right">$ 212</p>
+                        <p className="text-neutral-600 text-right">$ 0</p>
                       </div>
                     </div>
                   </div>
@@ -108,9 +108,9 @@ function Earn() {
                   </div>
 
 
-                    <button style={{width:"100%", height:"50px"}} type="submit" class="mt-6 py-2.5 px-3 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <button style={{width:"100%", height:"50px"}} type="submit" class="mt-6 py-2.5 px-3 text-sm font-medium text-white bg-gray-500 rounded-lg hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                       <span style={{width:"30px", fontWeight:"700", fontSize:"15px"}}>
-                        Manage
+                        Preparing...
                       </span>
                     </button>
                 </div>

@@ -11,7 +11,7 @@ import OpenPosition from "./component/OpenPosition"
 import {ethers, JsonRpcProvider} from "ethers";
 
 import {vatAbi, cdpManagerAbi, exitGemAbi} from "./abis"
-import {depositMint, Mint, mintEsdTx, openCDP, frobExit, exitGemTx, fluxGemTx, unwrapGemTx,frobMint,moveXsdTx,exitXsdTx} from "./txExecutor/interactions.js"
+import {depositMint, Mint, mintEsdTx, openCDP, frobExit, exitGemTx, fluxGemTx, unwrapGemTx,frobMint,moveXsdTx,exitXsdTx, allowCdp, hopeVat, joinXsd, approveXsd} from "./txExecutor/interactions.js"
 import {toastTrx} from "./component/toast"
 import { Address } from "./ContractsAddress"
 
@@ -48,11 +48,23 @@ function Detail() {
 
   useEffect(() => { 
 
+    if(userAccount !== "") {
+      if(isloading===false){
+        updateBalance()
+        positionUpdate()
+        updateUserStatus()
+      }
+    }
+
+  }, [isloading])
+
+  useEffect(() => { 
+
     checkChainNumber()
-    updateBalance()
-    positionUpdate()
 
     if(userAccount !== "") {
+      updateBalance()
+      positionUpdate()
       updateUserStatus()
     }
 
@@ -60,36 +72,31 @@ function Detail() {
 
   useEffect(() => { 
 
+    if(userAccount !== ""){
       updateBalance()
       positionUpdate()
-   
+    }
   }, [])
 
   const updateBalance = async () => {
-
     if(userAccount !== ""){
       window.web3 = new Web3(window.ethereum)
       const weiBalance = await window.web3.eth.getBalance(userAccount)
       console.log("weiBalance", weiBalance)
       setXrpBalance(Number(weiBalance)/1000000000000000000)
     }
-
   }
   
-
   const updateUserStatus = async () => {
-
     const providerUrl = "https://rpc-evm-sidechain.xrpl.org";
     const ilk = ethers.encodeBytes32String('WXRP'); // 'WXRP'를 bytes32로 인코딩
     const vatAddress = Address.VatContractAddress
     const cdpAddress = Address.CDPManagerContractAddress    
 
-    // RPC Provider 설정
     const provider = new JsonRpcProvider(providerUrl);
     const vatContract = new ethers.Contract(vatAddress, vatAbi, provider);
     const cdpContract = new ethers.Contract(cdpAddress, cdpManagerAbi, provider);
 
-    // Step 1: Get the first CDP ID for the user
     const cdpId = await cdpContract.first(userAccount);
     const web3 = new Web3();
 
@@ -99,6 +106,7 @@ function Detail() {
       const transInk = web3.utils.fromWei(ink.toString(), 'ether')
       const transArt = web3.utils.fromWei(art.toString(), 'ether')
 
+
       if(Number(ink) !== 0) {
         setIsNoposition(false)
         setUserPosition({transInk,transArt})
@@ -106,7 +114,6 @@ function Detail() {
     }
 
   }
-
 
   const positionUpdate = async () => {
 
@@ -176,23 +183,85 @@ function Detail() {
     window.web3 = new Web3(window.ethereum)
     const chainId = await window.web3.eth.getChainId()
 
+    const providerUrl = "https://rpc-evm-sidechain.xrpl.org";
+    const cdpAddress = Address.CDPManagerContractAddress    
+
+    const provider = new JsonRpcProvider(providerUrl);
+    const cdpContract = new ethers.Contract(cdpAddress, cdpManagerAbi, provider);
+
+    const cdpId = await cdpContract.first(userAccount);
+
+    const cdpCanCheck = await cdpContract.cdpCan(userAccount,Number(cdpId), Address.OneClickContractAddress);
+
+    console.log("cdpCanCheck", cdpCanCheck)
+
+
     if(chainId !== 1440002){
       alert("Unsupported Chain!")
     } else {
 
       try {
         setIsloading(true)
-        const trxReturn = await depositMint(userAccount, depositAmount || 0, mintAmount || 0)
-        toastTrx(trxReturn)
-        await updateBalance()
-        setIsloading(false)
+        if(cdpCanCheck === 1n){
+
+          const trxReturn = await depositMint(userAccount, depositAmount || 0, 0)
+          toastTrx(trxReturn)
+          await updateBalance()
+          setIsloading(false)
+  
+        } else {
+
+          const trxReturnAllow = await allowCdp(Number(cdpId), Address.OneClickContractAddress,1, userAccount)
+          toastTrx(trxReturnAllow)
+          const trxReturnDeposit = await depositMint(userAccount, depositAmount || 0, 0)
+          toastTrx(trxReturnDeposit)
+          await updateBalance()
+          setIsloading(false)
+
+        }
       } catch (error) {
          
       }
     }
   } 
 
-  const requestMint1 = async () => {
+  const repayStable = async () => {
+
+    window.web3 = new Web3(window.ethereum)
+    const chainId = await window.web3.eth.getChainId()
+
+    const providerUrl = "https://rpc-evm-sidechain.xrpl.org";
+    const cdpAddress = Address.CDPManagerContractAddress    
+
+    // RPC Provider 설정
+    const provider = new JsonRpcProvider(providerUrl);
+    const cdpContract = new ethers.Contract(cdpAddress, cdpManagerAbi, provider);
+
+    // Step 1: Get the first CDP ID for the user
+    const cdpId = await cdpContract.first(userAccount);
+    const urnAddress = await cdpContract.urns(cdpId);
+
+    console.log("urnAddress", urnAddress)
+
+    if(chainId !== 1440002){
+      alert("Unsupported Chain!")
+    } else {
+      try {
+        setIsloading(true)
+        const trxReturn = await approveXsd(userAccount, mintAmount || 0);
+        toastTrx(trxReturn)
+        const trxJoinXsd = await joinXsd(userAccount, urnAddress,  mintAmount || 0);
+        toastTrx(trxJoinXsd)
+        const frobTx = await frobMint(userAccount, cdpId, 0, -mintAmount || 0)
+        toastTrx(frobTx)
+        setIsloading(false)
+      } catch (error) {
+         
+      }
+    }
+  }
+
+  const requestMint = async () => {
 
     window.web3 = new Web3(window.ethereum)
     const chainId = await window.web3.eth.getChainId()
@@ -215,7 +284,7 @@ function Detail() {
         setIsloading(true)
         const trxReturn = await frobMint(userAccount, cdpId, 0, mintAmount || 0)
         toastTrx(trxReturn)
-        // moveXSD()
+        moveXSD()
         setIsloading(false)
       } catch (error) {
          
@@ -223,8 +292,8 @@ function Detail() {
     }
   }
 
-  // const moveXSD = async () => {
-    const requestMint = async () => {
+  const moveXSD = async () => {
+    // const requestMint = async () => {
 
     window.web3 = new Web3(window.ethereum)
     const chainId = await window.web3.eth.getChainId()
@@ -256,11 +325,18 @@ function Detail() {
   }
 
   
-  const exitXSD = async () => {
-  // const requestMint = async () => {
+  const exitXSD = async () => {   
 
     window.web3 = new Web3(window.ethereum)
     const chainId = await window.web3.eth.getChainId()
+
+    const providerUrl = "https://rpc-evm-sidechain.xrpl.org";
+    const cdpAddress = Address.VatContractAddress    
+
+    const provider = new JsonRpcProvider(providerUrl);
+    const cdpContract = new ethers.Contract(cdpAddress, cdpManagerAbi, provider);
+    const canCheck = await cdpContract.can(userAccount, Address.XsdJoinContractAddress);
+    console.log("canCheck", canCheck)
 
     if(chainId !== 1440002){
       alert("Unsupported Chain!")
@@ -268,9 +344,15 @@ function Detail() {
 
       try {
         setIsloading(true)
-
-        const trxReturn = await exitXsdTx(userAccount, mintAmount || 0)
-        toastTrx(trxReturn)
+        if(canCheck === 1n){
+          const trxReturn = await exitXsdTx(userAccount, mintAmount || 0)
+          toastTrx(trxReturn)
+        } else {
+          const trxHope = await hopeVat(userAccount);
+          toastTrx(trxHope)
+          const trxReturn = await exitXsdTx(userAccount, mintAmount || 0)
+          toastTrx(trxReturn)
+        }
         await updateBalance()
         setIsloading(false)
       } catch (error) {
@@ -488,7 +570,7 @@ function Detail() {
                 :
                 noPoistion ?
                   <><OpenPosition openCDP={openCDPFunction} /></>
-                  :
+                  :                  
                   <CollateralInput
                     depositAmount={depositAmount}
                     xrpBalance={xrpBalance}
@@ -502,6 +584,7 @@ function Detail() {
                     mintEsd={mintEsd}
                     FirstDeposit={FirstDeposit}
                     requestWithdrawal={requestWithdrawal}
+                    repayStable={repayStable}
                   />
               }           
           </div>
@@ -519,7 +602,6 @@ function Detail() {
             <span class="font-medium">Unsupported chain. Please switch to xrp evm-devnet in your wallet and restart the page.</span> 
                 </div>
                 </div>
-
                 :
                 <></>
               }

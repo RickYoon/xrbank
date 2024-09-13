@@ -64,7 +64,7 @@ const manageChainModalClose = payload => {
 };
 
 // matamask connect
-const metamaskConnect = payload => {
+export const metamaskConnect = payload => {
     return {
         type: METAMASK_CONNECT,
         payload,

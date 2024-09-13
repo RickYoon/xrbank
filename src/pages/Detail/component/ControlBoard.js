@@ -10,13 +10,40 @@ const CollateralInput = ({
   requestDeposit,
   requestMint,
   userPosition,
-  mintESD,
-  FirstDeposit,
-  requestWithdrawal
+  requestWithdrawal,
+  repayStable
 }) => {
   return (
     <div className="border border-blue-100 rounded-lg p-6 bg-white">
     <>
+    {/* {true ? 
+        <ul class="text-sm font-medium text-center text-gray-400 divide-x divide-blue-200 border border-blue-300 rounded-lg flex dark:divide-blue-700 dark:text-blue-400">
+            <li class="w-full">
+                <a href="#" class="inline-block w-full p-2 text-blue-600 bg-blue-100 rounded-l-lg focus:ring-1 focus:ring-blue-300 active focus:outline-none dark:bg-blue-700 dark:text-white">
+                  Deposit
+                </a>
+            </li>
+            <li class="w-full">
+                <a href="#" class="inline-block w-full p-2 bg-white rounded-r-lg hover:text-blue-700 hover:bg-blue-50 focus:ring-1 focus:outline-none focus:ring-blue-300 dark:hover:text-white dark:bg-blue-800 dark:hover:bg-blue-700">
+                  Mint
+                </a>
+            </li>
+        </ul>
+        :
+        <ul class="text-sm font-medium text-center text-gray-400 divide-x divide-blue-200 border border-blue-300 rounded-lg flex dark:divide-blue-700 dark:text-blue-400">
+        <li class="w-full">
+            <a href="#" class="inline-block w-full p-2 text-gray bg-white rounded-l-lg focus:ring-1 focus:ring-blue-300 active focus:outline-none dark:bg-blue-700 dark:text-white">
+              Deposit
+            </a>
+        </li>
+        <li class="w-full">
+            <a href="#" class="inline-block w-full p-2 text-blue-600 bg-blue-100 rounded-r-lg hover:text-blue-700 hover:bg-blue-50 focus:ring-1 focus:outline-none focus:ring-blue-300 dark:hover:text-white dark:bg-blue-800 dark:hover:bg-blue-700">
+              Mint
+            </a>
+        </li>
+        </ul>
+        } */}
+
         <div className="relative">
           <div className="font-semibold pb-3">Collateral</div>
           <div className="pb-3">Deposited : {userPosition.transInk} XRP</div>
@@ -36,7 +63,7 @@ const CollateralInput = ({
           </button>
         </div>
 
-        {userPosition.transInk === 0 ?
+        {userPosition.ink === 0 ?
           <>
             <button
                 onClick={requestDeposit}
@@ -85,19 +112,30 @@ const CollateralInput = ({
             placeholder={'0'}
             required
           />
-          <button
+          {/* <button
             onClick={maxDepositHandler}
             className="text-white absolute right-2.5 bottom-2.5 bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             Max
-          </button>
+          </button> */}
 
           
         </div>
 
         
 
-        {userPosition.transArt===0 ? 
+        {userPosition.art === 0 ? 
+          userPosition.ink === 0 ? 
+          <button
+          style={{ width: '100%', height: '50px' }}
+          type="submit"
+          className="mt-5 text-sm font-medium text-white bg-gray-300 rounded-lg hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            <span style={{ width: '30px', fontWeight: '700', fontSize: '15px' }}>
+                Add Collateral
+            </span>
+          </button>
+          :
           <button
               onClick={requestMint}
               style={{ width: '100%', height: '50px' }}
@@ -121,7 +159,7 @@ const CollateralInput = ({
                 </span>
             </button>
             <button
-                onClick={requestMint}
+                onClick={repayStable}
                 style={{ width: '100%', height: '50px' }}
                 type="submit"
                 className="mt-5 text-sm font-medium text-blue-500 bg-white rounded-lg border border-blue-500 hover:bg-blue-500 hover:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

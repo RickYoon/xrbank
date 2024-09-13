@@ -9,7 +9,9 @@ import { jugAbi, spotAbi, vatAbi, cdpManagerAbi, oracleAbi } from './abis';
 import { Address } from "./ContractsAddress"
 import { formatUnits } from './util/index';
 import Web3 from 'web3';
-
+import { 
+  metamaskConnect
+  } from 'redux/reducers/WalletActions'
 
 function Invest() {
 
@@ -18,8 +20,13 @@ function Invest() {
   const [protocolSetup, setProtocolSetup] = useState({interest: 0, liquidationLimit: 0, xrpPrice: 0, deposited: 0, issued: 0})
   const [systemStatus, setSystemStatus] = useState({Interest:0, LTV: 0, xrpPrice: 0, deposit: 0, Issued: 0})
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     protocolStatus()
+    const savedAccount = localStorage.getItem('address');
+    dispatch(metamaskConnect({ account: savedAccount }));
+
 
   }, [])
 
@@ -185,7 +192,7 @@ function Invest() {
                   <div className="flex flex-col">
                     <div className="flex flex-col gap-2 w-full pt-5">
                       <div className="grid grid-cols-[1fr_1fr] gap-3">
-                        <p className="text-left">Band Oracle (XRP)</p>
+                        <p className="text-left">XRP Oracle Price</p>
                         <p className="text-neutral-600 text-right">${systemStatus.xrpPrice}</p>
                       </div>
                       <div className="grid grid-cols-[1fr_1fr] gap-3">

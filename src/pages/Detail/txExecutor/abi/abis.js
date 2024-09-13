@@ -1,3 +1,62 @@
+export const approve_abi = {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "approve",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+
+
+export const hope_abi = {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "usr",
+        "type": "address"
+      }
+    ],
+    "name": "hope",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+
+export const XsdJoin_abi = {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "usr",
+        "type": "address"
+      },
+      {
+        "name": "wad",
+        "type": "uint256"
+      }
+    ],
+    "name": "join",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+
 export const XsdExit_abi = {
     "inputs": [
         {
@@ -54,6 +113,29 @@ export const unwrap_abi = {
     "stateMutability": "nonpayable",
     "type": "function"
 }
+
+export const cdpAllow_abi = {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "cdp",
+        "type": "uint256"
+      },
+      {
+        "name": "usr",
+        "type": "address"
+      },
+      {
+        "name": "ok",
+        "type": "uint256"
+      }
+    ],
+    "name": "cdpAllow",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
 
 export const cdpManager_abi = {
         "inputs": [

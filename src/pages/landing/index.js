@@ -10,10 +10,17 @@ import {
 function Landing() {
 
   const dispatch = useDispatch();
-
+  const savedAccount = localStorage.getItem('address');
+  
   useEffect(() => {
-    const savedAccount = localStorage.getItem('address');
-    dispatch(metamaskConnect({ account: savedAccount }));
+    if (savedAccount) {
+      // savedAccount가 null이 아닐 경우에만 dispatch 실행
+      dispatch(metamaskConnect({ account: savedAccount }));
+    } else {
+      console.log('No account found in localStorage');
+      // 혹은 원하는 대로 기본 값을 설정하거나 처리할 수 있음
+    }
+
   }, []);
 
   return (

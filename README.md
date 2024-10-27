@@ -1,39 +1,55 @@
-# xrBankDao : the central bank for xrp evm-sidechain
+# xrBankDAO: The Liquidity Layer for XRP EVM-Sidechain
 
-xrp evm-sidechain project  
-(MakerDao Forked)
+XrBankDAO was created to provide stablecoin liquidity to the emerging XRPL EVM sidechain, fostering growth within the ecosystem. Additionally, it was developed to enable XRP holders who supply liquidity to utilize their assets more efficiently and, if needed, to use stablecoins with low volatility.
 
-# Why xrbank?
+## Why xrBankDAO?
 
-XRPL’s DeFi ecosystem holds tremendous potential. In the Korean market alone, over 8 billion XRP are held on centralized exchanges (CEX), with more than 2 million holders. However, the DeFi market remains relatively undeveloped.
+XRPL’s DeFi ecosystem holds tremendous potential. In the Korean market alone, over 8 billion XRP are held on centralized exchanges (CEX, upbit/bithumb), with more than 2 million holders. However, the DeFi market remains relatively undeveloped.
 
-Moving forward, XRPL plans to launch its own stablecoin and an EVM sidechain. However, for the new chain to achieve stable and sustainable growth, a crypto-backed stablecoin is essential.
+Moving forward, XRPL plans to launch its own fiat-backed stablecoin and an EVM sidechain. However, relying solely on bridged fiat-backed stablecoins introduces risks such as volatility of backing assets, bridge vulnerabilities, and supply shortages.
 
 We are committed to filling this crucial gap by introducing a robust, crypto-backed stablecoin that will serve as the foundation for XRPL’s DeFi ecosystem. This stablecoin will not only enhance the security and stability of the network but also provide XRP holders with new opportunities to earn yield and participate in decentralized finance. Our vision is to unlock the full potential of XRPL’s DeFi capabilities, ensuring that it becomes a leading player in the global blockchain economy.
 
-# functions
+---
 
-deposit  
-mint  
-earn
+## System Design Diagrams and Narrative
 
-# Deployed contracts (xrpl evm-sidechain testnet)
+### System Design Overview
 
-"VatContractAddress": "0xec68468b97aadd8ef00e96a74e1a0142b831c9b5",  
-"GemContractAddress": "0x8049c9E3cE496b47E0fE8aa8EdAEf751cF87e07d",  
-"GemJoinContractAddress": "0x0fd765322C1D0d15153aD26459796f096221Fc1b",  
-"XSDContractAddress": "0x99E52111419687731Bb663d95ADa3D89420312B2",  
-"XsdJoinContractAddress": "0x3A07a5732e8d933B1648e0daE1BBf8bE694Dad8f",  
-"CDPManagerContractAddress": "0x121a5c14d4af667235Bf7fD49cb6A9977faC533F",  
-"OneClickContractAddress": "0x78eb9cF53BeEab4E628E21ab2C06D59d848Ba383",  
-"JugContractAddress": "0x1D13A32b62BaC1E4e37D7C7F0F93B3eB6291BdBC",  
-"SpotContractAddress": "0xf8704B3fB65925510f99dC8271c10f27BdE88228",  
-"DaiExitManagerContractAddress": "0xd76561e26E6cEDE748bAe34e4B5AF38Ecd023E75"
+xrBankDAO’s architecture follows a decentralized model to maintain security and reliability. The core contracts handle collateral, stablecoin issuance, yield generation, and liquidation if necessary. The primary components include:
 
-# How to start ?
+- **Vault**: Manages collateral deposits, mints stablecoins, and ensures solvency.
+- **Minting**: Allows users to mint stablecoins (XSD) against their deposited XRP collateral.
+- **Earnings**: Users can earn yield by providing liquidity or through interest-bearing features on XSD.
 
-git clone this repository
+![System Diagram](link_to_diagram.png) <!-- Replace with actual image link if available -->
 
-npm install
+### Interaction Flow
 
-npm start
+1. **User Deposit**: XRP is deposited as collateral.
+2. **Stablecoin Minting**: Users can mint XSD stablecoins based on the collateral.
+3. **Yield Generation**: Minted XSD can be used for earning yield, either through staking or liquidity provision.
+
+This design ensures stability and integrates directly with the XRPL ledger, ensuring that each transaction is transparent and secure.
+
+---
+
+## Functions
+
+The dApp includes three primary functions:
+
+- **Deposit**: Users deposit XRP as collateral.
+- **Mint**: Collateralized stablecoins are minted based on deposited assets.
+- **Earn**: Users can earn yield on their stablecoins through staking and liquidity provision.
+
+---
+
+## Quick Start Guide
+
+To start using xrBankDAO, follow these steps:
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-repo/xrBankDAO.git
+   cd xrBankDAO
+   ```

@@ -10,8 +10,9 @@ import {
 function Landing() {
 
   const dispatch = useDispatch();
+
   const savedAccount = localStorage.getItem('address');
-  
+
   useEffect(() => {
     if (savedAccount) {
       // savedAccount가 null이 아닐 경우에만 dispatch 실행
